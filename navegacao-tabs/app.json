@@ -1,11 +1,11 @@
 {
   "expo": {
-    "name": "navegacao-tabs",
-    "slug": "navegacao-tabs",
+    "name": "portfolio-mobile",
+    "slug": "portfolio-mobile",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
-    "scheme": "navegacaotabs",
+    "scheme": "portfolio-mobile",
     "userInterfaceStyle": "automatic",
     "ios": {
       "icon": "./assets/expo.icon"
