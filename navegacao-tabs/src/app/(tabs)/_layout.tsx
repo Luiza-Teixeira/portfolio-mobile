@@ -18,11 +18,11 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: 'Home',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ focused, size }) => (
             <Ionicons
               name="home-outline"
               size={size}
-              color={color}
+              color={focused ? '#0F172A' : '#94A3B8'}
             />
           ),
         }}
@@ -32,11 +32,11 @@ export default function TabsLayout() {
         name="sobre"
         options={{
           title: 'Sobre',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ focused, size }) => (
             <Ionicons
               name="information-circle-outline"
               size={size}
-              color={color}
+              color={focused ? '#0F172A' : '#94A3B8'}
             />
           ),
         }}
@@ -46,11 +46,11 @@ export default function TabsLayout() {
         name="academica"
         options={{
           title: 'Acadêmica',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ focused, size }) => (
             <Ionicons
               name="school-outline"
               size={size}
-              color={color}
+              color={focused ? '#0F172A' : '#94A3B8'}
             />
           ),
         }}
@@ -60,11 +60,11 @@ export default function TabsLayout() {
         name="profissional"
         options={{
           title: 'Profissional',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ focused, size }) => (
             <Ionicons
               name="briefcase-outline"
               size={size}
-              color={color}
+              color={focused ? '#0F172A' : '#94A3B8'}
             />
           ),
         }}
@@ -74,11 +74,11 @@ export default function TabsLayout() {
         name="projetos"
         options={{
           title: 'Projetos',
-          tabBarIcon: ({ color, size }) => (
+          tabBarIcon: ({ focused, size }) => (
             <Ionicons
               name="code-slash-outline"
               size={size}
-              color={color}
+              color={focused ? '#0F172A' : '#94A3B8'}
             />
           ),
         }}
