@@ -46,7 +46,7 @@
     },
     "owner": "pdm_26.2-unicap",
     "runtimeVersion": {
-      "policy": "appVersion"
+      "policy": "sdkVersion"
     },
     "updates": {
       "url": "https://u.expo.dev/9c75a6c5-3666-4114-8283-c8413e173d18"
