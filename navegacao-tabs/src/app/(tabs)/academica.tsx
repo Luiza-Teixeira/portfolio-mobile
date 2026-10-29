@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
@@ -7,8 +9,58 @@ import {
 
 import SectionTitle from '@/components/SectionTitle';
 import TechBadge from '@/components/TechBadge';
+import {
+  buscarCurriculo,
+  Formacao,
+} from '@/services/api';
 
 export default function Academica() {
+  const [formacao, setFormacao] = useState<Formacao | null>(null);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState('');
+
+  useEffect(() => {
+    async function carregarFormacao() {
+      try {
+        const curriculo = await buscarCurriculo();
+
+        if (curriculo.formacoes.length > 0) {
+          setFormacao(curriculo.formacoes[0]);
+        } else {
+          setErro('Nenhuma formação acadêmica encontrada.');
+        }
+      } catch (error) {
+        console.error(error);
+        setErro('Não foi possível carregar a formação acadêmica.');
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    carregarFormacao();
+  }, []);
+
+  if (carregando) {
+    return (
+      <View style={styles.estadoContainer}>
+        <ActivityIndicator size="large" />
+        <Text style={styles.estadoTexto}>
+          Carregando formação...
+        </Text>
+      </View>
+    );
+  }
+
+  if (erro || !formacao) {
+    return (
+      <View style={styles.estadoContainer}>
+        <Text style={styles.erroTexto}>
+          {erro || 'Não foi possível carregar a formação.'}
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView
       style={styles.pagina}
@@ -34,18 +86,18 @@ export default function Academica() {
           <Text style={styles.tipo}>GRADUAÇÃO</Text>
 
           <Text style={styles.curso}>
-            Sistemas para Internet
+            {formacao.curso}
           </Text>
 
           <Text style={styles.instituicao}>
-            Universidade Católica de Pernambuco
+            {formacao.instituicao}
           </Text>
 
           <View style={styles.status}>
             <View style={styles.statusPonto} />
 
             <Text style={styles.statusTexto}>
-              Em andamento
+              {formacao.status}
             </Text>
           </View>
 
@@ -63,12 +115,12 @@ export default function Academica() {
 
         <View style={styles.card}>
           <View style={styles.tecnologias}>
-            <TechBadge nome="Desenvolvimento Mobile" />
-            <TechBadge nome="APIs e Serviços" />
-            <TechBadge nome="Programação" />
-            <TechBadge nome="Arquitetura de Software" />
-            <TechBadge nome="Inteligência Artificial" />
-            <TechBadge nome="Testes de Software" />
+            {formacao.areas.map((area) => (
+              <TechBadge
+                key={area}
+                nome={area}
+              />
+            ))}
           </View>
         </View>
       </View>
@@ -86,6 +138,26 @@ const styles = StyleSheet.create({
     padding: 22,
     paddingTop: 30,
     paddingBottom: 40,
+  },
+
+  estadoContainer: {
+    flex: 1,
+    backgroundColor: '#F8FAFC',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+
+  estadoTexto: {
+    color: '#64748B',
+    fontSize: 14,
+    marginTop: 12,
+  },
+
+  erroTexto: {
+    color: '#B91C1C',
+    fontSize: 15,
+    textAlign: 'center',
   },
 
   cabecalho: {
