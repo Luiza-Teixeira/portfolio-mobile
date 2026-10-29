@@ -18,7 +18,9 @@ export default function Sobre() {
       <View style={styles.cabecalho}>
         <Text style={styles.codigo}>{'</>'} SOBRE O PROJETO</Text>
 
-        <Text style={styles.titulo}>Portfolio Mobile</Text>
+        <Text style={styles.titulo}>
+          Portfólio Mobile
+        </Text>
 
         <Text style={styles.subtitulo}>
           Aplicativo desenvolvido com React Native e Expo
@@ -36,9 +38,10 @@ export default function Sobre() {
           </Text>
 
           <Text style={styles.textoSecundario}>
-            O projeto também aplica conceitos estudados na disciplina de
-            Programação para Dispositivos Móveis, como componentização,
-            navegação entre telas, estilização e gerenciamento de estado.
+            O projeto aplica conceitos estudados na disciplina de Programação
+            para Dispositivos Móveis, como componentização, navegação entre
+            telas, estilização, gerenciamento de estado e consumo de uma API
+            REST.
           </Text>
         </View>
       </View>
@@ -47,7 +50,9 @@ export default function Sobre() {
         <SectionTitle>Tecnologias utilizadas</SectionTitle>
 
         <View style={styles.card}>
-          <Text style={styles.categoria}>Desenvolvimento mobile</Text>
+          <Text style={styles.categoria}>
+            Desenvolvimento mobile
+          </Text>
 
           <View style={styles.tecnologias}>
             <TechBadge nome="React Native" />
@@ -56,16 +61,42 @@ export default function Sobre() {
             <TechBadge nome="React" />
           </View>
 
-          <Text style={styles.categoria}>Navegação e interface</Text>
+          <Text style={styles.categoria}>
+            Navegação e interface
+          </Text>
 
           <View style={styles.tecnologias}>
             <TechBadge nome="Expo Router" />
             <TechBadge nome="StyleSheet" />
           </View>
 
-          <Text style={styles.categoria}>Versionamento</Text>
+          <Text style={styles.categoria}>
+            Integração
+          </Text>
 
           <View style={styles.tecnologias}>
+            <TechBadge nome="Fetch API" />
+            <TechBadge nome="API REST" />
+          </View>
+
+          <Text style={styles.categoria}>
+            Back-end
+          </Text>
+
+          <View style={styles.tecnologias}>
+            <TechBadge nome="Node.js" />
+            <TechBadge nome="Express" />
+            <TechBadge nome="Sequelize" />
+            <TechBadge nome="PostgreSQL" />
+            <TechBadge nome="CORS" />
+          </View>
+
+          <Text style={styles.categoria}>
+            Hospedagem e versionamento
+          </Text>
+
+          <View style={styles.tecnologias}>
+            <TechBadge nome="Vercel" />
             <TechBadge nome="Git" />
             <TechBadge nome="GitHub" />
           </View>
@@ -76,14 +107,16 @@ export default function Sobre() {
         <SectionTitle>Funcionalidade extra</SectionTitle>
 
         <View style={styles.destaque}>
-          <Text style={styles.destaqueNumero}>01</Text>
+          <Text style={styles.destaqueNumero}>
+            01
+          </Text>
 
           <Text style={styles.destaqueTitulo}>
             Filtro de projetos por tecnologia
           </Text>
 
           <Text style={styles.destaqueTexto}>
-            Na tela de projetos, o usuário poderá selecionar uma tecnologia
+            Na tela de projetos, o usuário pode selecionar uma tecnologia
             para visualizar somente os projetos relacionados àquela categoria,
             facilitando a exploração do portfólio.
           </Text>
@@ -94,17 +127,38 @@ export default function Sobre() {
         <SectionTitle>Arquitetura do aplicativo</SectionTitle>
 
         <View style={styles.card}>
-          <Text style={styles.fluxo}>Interface Mobile</Text>
+          <Text style={styles.fluxo}>
+            Interface Mobile
+          </Text>
+
           <Text style={styles.seta}>↓</Text>
-          <Text style={styles.fluxo}>React Native + Expo</Text>
+
+          <Text style={styles.fluxo}>
+            React Native + Expo
+          </Text>
+
           <Text style={styles.seta}>↓</Text>
-          <Text style={styles.fluxo}>Expo Router</Text>
+
+          <Text style={styles.fluxo}>
+            Fetch / API REST
+          </Text>
+
           <Text style={styles.seta}>↓</Text>
-          <Text style={styles.fluxo}>API / Back-end</Text>
+
+          <Text style={styles.fluxo}>
+            Node.js + Express
+          </Text>
+
+          <Text style={styles.seta}>↓</Text>
+
+          <Text style={styles.fluxo}>
+            Sequelize + PostgreSQL
+          </Text>
 
           <Text style={styles.observacao}>
-            A integração com o back-end será responsável por fornecer os dados
-            exibidos no portfólio.
+            Os dados de perfil, formação acadêmica, experiência profissional
+            e projetos são fornecidos pelo back-end e consumidos pelo
+            aplicativo através de requisições HTTP.
           </Text>
         </View>
       </View>
