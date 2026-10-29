@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   Pressable,
   ScrollView,
   StyleSheet,
@@ -8,64 +9,15 @@ import {
 } from 'react-native';
 
 import TechBadge from '@/components/TechBadge';
+import {
+  buscarCurriculo,
+  Projeto,
+} from '@/services/api';
 
-type Projeto = {
-  id: number;
-  nome: string;
+type ProjetoVisual = Projeto & {
   tipo: string;
-  descricao: string;
-  tecnologias: string[];
   observacao: string;
 };
-
-const projetos: Projeto[] = [
-  {
-    id: 1,
-    nome: 'Estoque Sênior',
-    tipo: 'BACK-END',
-    descricao:
-      'Projeto acadêmico desenvolvido em equipe para gestão de estoque e vendas, com foco em acessibilidade e usabilidade para pessoas idosas. Participo ativamente do desenvolvimento do back-end, contribuindo com funcionalidades de produtos, vendas, estoque, validações, tratamento de exceções e testes.',
-    tecnologias: [
-      'Java',
-      'Spring Boot',
-      'Spring Data JPA',
-      'PostgreSQL',
-      'JUnit ',
-      'Mockito',
-      'API REST',
-      'Arquitetura em Camadas',
-    ],
-    observacao: 'Projeto acadêmico em equipe • Cliente real • Em desenvolvimento',
-  },
-  {
-    id: 2,
-    nome: 'Jogo de Dados',
-    tipo: 'MOBILE',
-    descricao:
-      'Aplicativo mobile de jogo de dados para dois jogadores, com controle de turnos, rodadas, pontuação e resultado final da partida.',
-    tecnologias: [
-      'React Native',
-      'Expo',
-      'TypeScript',
-      'Expo Router',
-    ],
-    observacao: 'Projeto acadêmico',
-  },
-  {
-    id: 3,
-    nome: 'Portfólio Mobile',
-    tipo: 'MOBILE',
-    descricao:
-      'Aplicativo mobile desenvolvido para apresentar minha formação acadêmica, experiência profissional, conhecimentos técnicos e projetos.',
-    tecnologias: [
-      'React Native',
-      'Expo',
-      'TypeScript',
-      'Expo Router',
-    ],
-    observacao: 'Projeto acadêmico',
-  },
-];
 
 const filtros = [
   'Todos',
@@ -75,7 +27,51 @@ const filtros = [
 ];
 
 export default function Projetos() {
+  const [projetos, setProjetos] = useState<ProjetoVisual[]>([]);
   const [filtro, setFiltro] = useState('Todos');
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState('');
+
+  useEffect(() => {
+    async function carregarProjetos() {
+      try {
+        const curriculo = await buscarCurriculo();
+
+        const projetosAdaptados = curriculo.projetos.map((projeto) => {
+          const ehMobile =
+            projeto.tecnologias.includes('React Native') ||
+            projeto.tecnologias.includes('Expo');
+
+          let observacao = 'Projeto acadêmico';
+
+          if (projeto.nome === 'Estoque Sênior') {
+            observacao =
+              'Projeto acadêmico em equipe • Cliente real • Em desenvolvimento';
+          }
+
+          if (projeto.nome === 'Portfólio Mobile') {
+            observacao =
+              'Projeto acadêmico • Aplicativo mobile';
+          }
+
+          return {
+            ...projeto,
+            tipo: ehMobile ? 'MOBILE' : 'BACK-END',
+            observacao,
+          };
+        });
+
+        setProjetos(projetosAdaptados);
+      } catch (error) {
+        console.error(error);
+        setErro('Não foi possível carregar os projetos.');
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    carregarProjetos();
+  }, []);
 
   const projetosFiltrados =
     filtro === 'Todos'
@@ -84,6 +80,28 @@ export default function Projetos() {
           projeto.tecnologias.includes(filtro)
         );
 
+  if (carregando) {
+    return (
+      <View style={styles.estadoContainer}>
+        <ActivityIndicator size="large" />
+
+        <Text style={styles.estadoTexto}>
+          Carregando projetos...
+        </Text>
+      </View>
+    );
+  }
+
+  if (erro) {
+    return (
+      <View style={styles.estadoContainer}>
+        <Text style={styles.erroTexto}>
+          {erro}
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView
       style={styles.pagina}
@@ -91,7 +109,9 @@ export default function Projetos() {
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.cabecalho}>
-        <Text style={styles.codigo}>{'</>'} PROJETOS</Text>
+        <Text style={styles.codigo}>
+          {'</>'} PROJETOS
+        </Text>
 
         <Text style={styles.titulo}>
           Meus Projetos
@@ -194,6 +214,26 @@ const styles = StyleSheet.create({
     padding: 22,
     paddingTop: 30,
     paddingBottom: 40,
+  },
+
+  estadoContainer: {
+    flex: 1,
+    backgroundColor: '#F8FAFC',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+
+  estadoTexto: {
+    color: '#64748B',
+    fontSize: 14,
+    marginTop: 12,
+  },
+
+  erroTexto: {
+    color: '#B91C1C',
+    fontSize: 15,
+    textAlign: 'center',
   },
 
   cabecalho: {
