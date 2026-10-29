@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   ScrollView,
   StyleSheet,
   Text,
@@ -7,8 +9,75 @@ import {
 
 import SectionTitle from '@/components/SectionTitle';
 import TechBadge from '@/components/TechBadge';
+import {
+  buscarCurriculo,
+  Experiencia,
+} from '@/services/api';
 
 export default function Profissional() {
+  const [experiencia, setExperiencia] = useState<Experiencia | null>(null);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState('');
+
+  useEffect(() => {
+    async function carregarExperiencia() {
+      try {
+        const curriculo = await buscarCurriculo();
+
+        if (curriculo.experiencias.length > 0) {
+          setExperiencia(curriculo.experiencias[0]);
+        } else {
+          setErro('Nenhuma experiência profissional encontrada.');
+        }
+      } catch (error) {
+        console.error(error);
+        setErro('Não foi possível carregar a experiência profissional.');
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    carregarExperiencia();
+  }, []);
+
+  if (carregando) {
+    return (
+      <View style={styles.estadoContainer}>
+        <ActivityIndicator size="large" />
+
+        <Text style={styles.estadoTexto}>
+          Carregando experiência...
+        </Text>
+      </View>
+    );
+  }
+
+  if (erro || !experiencia) {
+    return (
+      <View style={styles.estadoContainer}>
+        <Text style={styles.erroTexto}>
+          {erro || 'Não foi possível carregar a experiência.'}
+        </Text>
+      </View>
+    );
+  }
+
+  const tecnologiasBackEnd = experiencia.tecnologias.filter(
+    (tecnologia) =>
+      tecnologia === 'Java' ||
+      tecnologia === 'Spring Boot'
+  );
+
+  const tecnologiasArquitetura = experiencia.tecnologias.filter(
+    (tecnologia) =>
+      tecnologia.includes('Arquitetura')
+  );
+
+  const metodologias = experiencia.tecnologias.filter(
+    (tecnologia) =>
+      tecnologia === 'Scrum'
+  );
+
   return (
     <ScrollView
       style={styles.pagina}
@@ -16,7 +85,9 @@ export default function Profissional() {
       showsVerticalScrollIndicator={false}
     >
       <View style={styles.cabecalho}>
-        <Text style={styles.codigo}>{'</>'} EXPERIÊNCIA</Text>
+        <Text style={styles.codigo}>
+          {'</>'} EXPERIÊNCIA
+        </Text>
 
         <Text style={styles.titulo}>
           Experiência Profissional
@@ -31,10 +102,12 @@ export default function Profissional() {
         <SectionTitle>Atuação atual</SectionTitle>
 
         <View style={styles.card}>
-          <Text style={styles.tipo}>BACK-END</Text>
+          <Text style={styles.tipo}>
+            BACK-END
+          </Text>
 
           <Text style={styles.cargo}>
-            Desenvolvedora Back-end Java Júnior
+            {experiencia.cargo}
           </Text>
 
           <Text style={styles.area}>
@@ -50,10 +123,7 @@ export default function Profissional() {
           </View>
 
           <Text style={styles.descricao}>
-            Atuação na sustentação de sistemas bancários, com foco em
-            desenvolvimento e manutenção de aplicações back-end em Java.
-            Experiência com Spring Boot, arquiteturas Hexagonal e Arquitetura em Camadas,
-            trabalhando em equipe sob metodologia ágil Scrum.
+            {experiencia.descricao}
           </Text>
         </View>
       </View>
@@ -62,24 +132,43 @@ export default function Profissional() {
         <SectionTitle>Tecnologias e práticas</SectionTitle>
 
         <View style={styles.card}>
-          <Text style={styles.categoria}>Back-end</Text>
+          <Text style={styles.categoria}>
+            Back-end
+          </Text>
 
           <View style={styles.tecnologias}>
-            <TechBadge nome="Java" />
-            <TechBadge nome="Spring Boot" />
+            {tecnologiasBackEnd.map((tecnologia) => (
+              <TechBadge
+                key={tecnologia}
+                nome={tecnologia}
+              />
+            ))}
           </View>
 
-          <Text style={styles.categoria}>Arquitetura</Text>
+          <Text style={styles.categoria}>
+            Arquitetura
+          </Text>
 
           <View style={styles.tecnologias}>
-            <TechBadge nome="Arquitetura Hexagonal" />
-            <TechBadge nome="Arquitetura em Camadas" />
+            {tecnologiasArquitetura.map((tecnologia) => (
+              <TechBadge
+                key={tecnologia}
+                nome={tecnologia}
+              />
+            ))}
           </View>
 
-          <Text style={styles.categoria}>Metodologia</Text>
+          <Text style={styles.categoria}>
+            Metodologia
+          </Text>
 
           <View style={styles.tecnologias}>
-            <TechBadge nome="Scrum" />
+            {metodologias.map((tecnologia) => (
+              <TechBadge
+                key={tecnologia}
+                nome={tecnologia}
+              />
+            ))}
           </View>
         </View>
       </View>
@@ -97,6 +186,26 @@ const styles = StyleSheet.create({
     padding: 22,
     paddingTop: 30,
     paddingBottom: 40,
+  },
+
+  estadoContainer: {
+    flex: 1,
+    backgroundColor: '#F8FAFC',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+
+  estadoTexto: {
+    color: '#64748B',
+    fontSize: 14,
+    marginTop: 12,
+  },
+
+  erroTexto: {
+    color: '#B91C1C',
+    fontSize: 15,
+    textAlign: 'center',
   },
 
   cabecalho: {
