@@ -1,5 +1,7 @@
 import { router } from 'expo-router';
+import { useEffect, useState } from 'react';
 import {
+  ActivityIndicator,
   Image,
   Pressable,
   ScrollView,
@@ -10,8 +12,53 @@ import {
 
 import SectionTitle from '@/components/SectionTitle';
 import TechBadge from '@/components/TechBadge';
+import {
+  buscarCurriculo,
+  Curriculo,
+} from '@/services/api';
 
 export default function Home() {
+  const [curriculo, setCurriculo] = useState<Curriculo | null>(null);
+  const [carregando, setCarregando] = useState(true);
+  const [erro, setErro] = useState('');
+
+  useEffect(() => {
+    async function carregarCurriculo() {
+      try {
+        const dados = await buscarCurriculo();
+        setCurriculo(dados);
+      } catch (error) {
+        console.error(error);
+        setErro('Não foi possível carregar os dados do portfólio.');
+      } finally {
+        setCarregando(false);
+      }
+    }
+
+    carregarCurriculo();
+  }, []);
+
+  if (carregando) {
+    return (
+      <View style={styles.estadoContainer}>
+        <ActivityIndicator size="large" />
+        <Text style={styles.estadoTexto}>
+          Carregando portfólio...
+        </Text>
+      </View>
+    );
+  }
+
+  if (erro || !curriculo) {
+    return (
+      <View style={styles.estadoContainer}>
+        <Text style={styles.erroTexto}>
+          {erro || 'Não foi possível carregar o currículo.'}
+        </Text>
+      </View>
+    );
+  }
+
   return (
     <ScrollView
       style={styles.pagina}
@@ -27,25 +74,24 @@ export default function Home() {
           resizeMode="cover"
         />
 
-        <Text style={styles.nome}>Luiza Teixeira</Text>
+        <Text style={styles.nome}>
+          {curriculo.nome}
+        </Text>
 
         <Text style={styles.subtitulo}>
-          Estudante de Sistemas para Internet • Desenvolvedora Back-end Java Júnior
+          {curriculo.titulo}
         </Text>
 
         <View style={styles.status}>
           <View style={styles.statusPonto} />
+
           <Text style={styles.statusTexto}>
             Desenvolvedora em atuação
           </Text>
         </View>
 
         <Text style={styles.apresentacao}>
-          Estudante de Sistemas para Internet na Universidade Católica de Pernambuco
-          e desenvolvedora Back-end Java Júnior na Capgemini. Concilio minha
-          formação acadêmica com a experiência profissional na área de tecnologia,
-          buscando aprimorar continuamente meus conhecimentos em desenvolvimento
-          de software.
+          {curriculo.resumo}
         </Text>
       </View>
 
@@ -53,18 +99,21 @@ export default function Home() {
         <SectionTitle>Stack & conhecimentos</SectionTitle>
 
         <Text style={styles.categoria}>Back-end</Text>
+
         <View style={styles.tecnologias}>
           <TechBadge nome="Java" />
           <TechBadge nome="Spring Boot" />
         </View>
 
         <Text style={styles.categoria}>Arquitetura</Text>
+
         <View style={styles.tecnologias}>
           <TechBadge nome="Arquitetura Hexagonal" />
           <TechBadge nome="Arquitetura em Camadas" />
         </View>
 
         <Text style={styles.categoria}>Mobile / Front-end</Text>
+
         <View style={styles.tecnologias}>
           <TechBadge nome="JavaScript" />
           <TechBadge nome="TypeScript" />
@@ -73,6 +122,7 @@ export default function Home() {
         </View>
 
         <Text style={styles.categoria}>Ferramentas</Text>
+
         <View style={styles.tecnologias}>
           <TechBadge nome="Git" />
         </View>
@@ -125,6 +175,26 @@ const styles = StyleSheet.create({
     padding: 22,
     paddingTop: 30,
     paddingBottom: 40,
+  },
+
+  estadoContainer: {
+    flex: 1,
+    backgroundColor: '#F8FAFC',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 24,
+  },
+
+  estadoTexto: {
+    color: '#64748B',
+    fontSize: 14,
+    marginTop: 12,
+  },
+
+  erroTexto: {
+    color: '#B91C1C',
+    fontSize: 15,
+    textAlign: 'center',
   },
 
   hero: {
